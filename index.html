@@ -6,20 +6,38 @@
     <title>AIIMS Jodhpur Tracker | AIR 1</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #050a14; --card: #101827; --accent: #00d2ff; --gold: #f1c40f; --text: #ffffff; --success: #00ff88; }
+        :root { --bg: #050a14; --card: #101827; --accent: #00d2ff; --gold: #f1c40f; --text: #ffffff; --success: #00ff88; --error: #ff4d4d; }
         body { font-family: 'Poppins', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .header h1 { font-size: 2rem; color: var(--accent); margin: 0; letter-spacing: 2px; }
-        .header p { color: var(--gold); font-weight: bold; margin: 5px 0; }
-        .auth-btn { background: white; color: black; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
-        .tracker-card { background: var(--card); border: 1px solid rgba(0, 210, 255, 0.2); border-radius: 15px; padding: 20px; width: 100%; max-width: 450px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
-        .progress-container { width: 100%; max-width: 450px; background: rgba(255,255,255,0.1); height: 12px; border-radius: 6px; margin-bottom: 10px; overflow: hidden; }
-        #progressBar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--success)); transition: 0.5s; }
-        .task-row { display: flex; align-items: center; padding: 12px; margin: 8px 0; background: rgba(255, 255, 255, 0.03); border-radius: 8px; border-left: 4px solid var(--accent); }
-        input[type="checkbox"] { width: 22px; height: 22px; margin-right: 15px; cursor: pointer; accent-color: var(--accent); }
-        .history-box { margin-top: 30px; width: 100%; max-width: 450px; }
-        .history-item { display: flex; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.04); margin-bottom: 8px; border-radius: 10px; font-size: 0.9rem; border-bottom: 1px solid rgba(0,210,255,0.1); }
-        #userStatus { margin-bottom: 15px; font-size: 0.85rem; color: var(--success); display: none; text-align: center; }
+        
+        .header { text-align: center; margin-bottom: 10px; }
+        .header h1 { font-size: 2rem; color: var(--accent); margin: 0; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0,210,255,0.3); }
+        .header p { color: var(--gold); font-weight: bold; margin: 5px 0; font-size: 1.1rem; }
+        
+        .countdown-container { background: rgba(241, 196, 15, 0.1); border: 1px solid var(--gold); padding: 10px 20px; border-radius: 50px; margin-bottom: 25px; font-weight: 600; color: var(--gold); font-size: 0.9rem; }
+
+        .progress-section { width: 100%; max-width: 450px; text-align: center; margin-bottom: 25px; }
+        .progress-container { background: rgba(255,255,255,0.05); height: 14px; border-radius: 7px; overflow: hidden; margin-top: 8px; border: 1px solid rgba(255,255,255,0.1); }
+        #progressBar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--success)); transition: 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 0 15px var(--accent); }
+        
+        .tracker-card { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; width: 100%; max-width: 450px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .task-group { margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        .task-group:last-child { border: none; }
+        
+        .task-row { display: flex; align-items: center; padding: 12px; margin: 6px 0; background: rgba(255, 255, 255, 0.02); border-radius: 10px; transition: 0.3s; }
+        .task-row.study { border-left: 4px solid var(--accent); }
+        .task-row.routine { border-left: 4px solid #4b5563; opacity: 0.8; }
+        .task-row.goal { border-left: 4px solid var(--gold); background: rgba(241, 196, 15, 0.05); }
+        
+        input[type="checkbox"] { width: 22px; height: 22px; margin-right: 15px; cursor: pointer; accent-color: var(--success); }
+        
+        .history-box { margin-top: 30px; width: 100%; max-width: 450px; margin-bottom: 100px; }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(255,255,255,0.03); margin-bottom: 10px; border-radius: 12px; }
+        .badge { padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; }
+        .badge.success { background: rgba(0, 255, 136, 0.2); color: var(--success); border: 1px solid var(--success); }
+        .badge.fail { background: rgba(255, 77, 77, 0.2); color: var(--error); border: 1px solid var(--error); }
+
+        #userStatus { margin-bottom: 10px; font-size: 0.75rem; color: var(--success); font-weight: bold; opacity: 0.8; }
+        .auth-btn { background: white; color: black; border: none; padding: 14px 30px; border-radius: 50px; cursor: pointer; font-weight: 800; margin-top: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.4); text-transform: uppercase; letter-spacing: 1px; }
         .loading-overlay { font-size: 0.9rem; color: var(--accent); margin: 20px; display: none; }
     </style>
 </head>
@@ -30,25 +48,43 @@
         <p>GOAL: 720/720 (AIR 1)</p>
     </div>
 
-    <button id="loginBtn" class="auth-btn">
-       Login with Google
-    </button>
-    
-    <div id="userStatus">SYNC ACTIVE: <span id="userNameDisplay"></span></div>
-    <div id="loading" class="loading-overlay">Syncing with Cloud...</div>
+    <div class="countdown-container" id="neetCountdown">Calculating NEET 2026 Countdown...</div>
 
-    <div class="progress-container"><div id="progressBar"></div></div>
-    <div style="font-size: 0.9rem; margin-bottom: 20px; color: var(--success); font-weight: bold;" id="hourLabel">0 / 11 Hours</div>
+    <div class="progress-section">
+        <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: bold;">
+            <span>DAILY PROGRESS</span>
+            <span id="hourLabel" style="color: var(--success);">0 / 11 HOURS</span>
+        </div>
+        <div class="progress-container"><div id="progressBar"></div></div>
+    </div>
+
+    <div id="userStatus" style="display:none;">☁️ CLOUD SYNC ACTIVE: <span id="userNameDisplay"></span></div>
+    <div id="loading" class="loading-overlay">Syncing with AIIMS Cloud...</div>
 
     <div class="tracker-card">
-        <div id="displayDate" style="text-align: center; opacity: 0.6; margin-bottom: 10px; font-size: 0.8rem;"></div>
-        <div id="taskList"></div>
+        <div id="displayDate" style="text-align: center; opacity: 0.5; margin-bottom: 15px; font-size: 0.8rem;"></div>
+        
+        <div class="task-group">
+            <div class="task-row routine"><input type="checkbox" id="w8"> <span>Wake up at 8 AM</span></div>
+        </div>
+
+        <div class="task-group" id="studyTasks">
+            </div>
+
+        <div class="task-group">
+            <div class="task-row goal"><input type="checkbox" id="g11"> <span style="color: var(--gold); font-weight: bold;">11 Hours Goal Met</span></div>
+            <div class="task-row routine"><input type="checkbox" id="l1"> <span>Sleep at 1 AM</span></div>
+        </div>
     </div>
 
     <div class="history-box">
-        <h3 style="text-align: center; color: var(--accent); font-size: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">STUDY LOG (TOTAL HOURS)</h3>
-        <div id="historyLog"></div>
+        <h3 style="text-align: center; color: var(--accent); font-size: 0.9rem; letter-spacing: 1px; margin-bottom: 15px;">PREVIOUS BATTLES (STUDY LOG)</h3>
+        <div id="historyLog">
+            <div style="text-align:center; opacity:0.4; font-size:0.8rem; padding: 20px;">Awaiting your first victory...</div>
+        </div>
     </div>
+
+    <button id="loginBtn" class="auth-btn">Login with Google</button>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
@@ -70,20 +106,24 @@
         const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
-        const tasks = [
-            { id: 'w8', text: 'Wake up at 8 AM', hrs: 0, cat: 'routine' },
-            { id: 's1', text: 'Study Slot 1 (8-10 AM)', hrs: 2, cat: 'study' },
-            { id: 's2', text: 'Study Slot 2 (11-1 PM)', hrs: 2, cat: 'study' },
-            { id: 's3', text: 'Study Slot 3 (2-5 PM)', hrs: 3, cat: 'study' },
-            { id: 's4', text: 'Study Slot 4 (6-9 PM)', hrs: 3, cat: 'study' },
-            { id: 's5', text: 'Study Slot 5 (10-11 PM)', hrs: 1, cat: 'study' },
-            { id: 'g11', text: '11 Hours Goal Met', hrs: 0, cat: 'goal' },
-            { id: 'l1', text: 'Sleep at 1 AM', hrs: 0, cat: 'routine' }
+        const studyTasks = [
+            { id: 's1', text: 'Study Slot 1 (8-10 AM)', hrs: 2 },
+            { id: 's2', text: 'Study Slot 2 (11-1 PM)', hrs: 2 },
+            { id: 's3', text: 'Study Slot 3 (2-5 PM)', hrs: 3 },
+            { id: 's4', text: 'Study Slot 4 (6-9 PM)', hrs: 3 },
+            { id: 's5', text: 'Study Slot 5 (10-11 PM)', hrs: 1 }
         ];
 
         let userUID = null;
 
-        // AUTHENTICATION LOGIC
+        function updateCountdown() {
+            const neetDate = new Date("May 3, 2026 14:00:00").getTime();
+            const now = new Date().getTime();
+            const diff = neetDate - now;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            document.getElementById('neetCountdown').innerText = `🚀 NEET 2026: ${days} DAYS LEFT`;
+        }
+
         document.getElementById('loginBtn').addEventListener('click', () => {
             signInWithPopup(auth, provider).catch(err => alert("Login Failed: " + err.message));
         });
@@ -93,49 +133,66 @@
                 userUID = user.uid;
                 document.getElementById('loginBtn').style.display = 'none';
                 document.getElementById('userStatus').style.display = 'block';
-                document.getElementById('userNameDisplay').innerText = user.displayName;
+                document.getElementById('userNameDisplay').innerText = user.displayName.toUpperCase();
                 syncData();
             }
         });
 
-        // INITIALIZE UI
         function init() {
-            document.getElementById('displayDate').innerText = new Date().toDateString();
-            const list = document.getElementById('taskList');
-            list.innerHTML = '';
-            tasks.forEach(t => {
+            updateCountdown();
+            document.getElementById('displayDate').innerText = new Date().toDateString().toUpperCase();
+            const container = document.getElementById('studyTasks');
+            studyTasks.forEach(t => {
                 const div = document.createElement('div');
-                div.className = 'task-row';
+                div.className = 'task-row study';
                 div.innerHTML = `<input type="checkbox" id="${t.id}"> <span>${t.text}</span>`;
-                div.querySelector('input').addEventListener('change', saveData);
-                list.appendChild(div);
+                div.querySelector('input').addEventListener('change', calculateAndSave);
+                container.appendChild(div);
             });
+            document.getElementById('w8').addEventListener('change', calculateAndSave);
+            document.getElementById('g11').addEventListener('change', calculateAndSave);
+            document.getElementById('l1').addEventListener('change', calculateAndSave);
         }
 
-        // SAVE DATA TO CLOUD
-        async function saveData() {
-            if (!userUID) return;
-            const today = new Date().toDateString();
-            const status = {};
+        async function calculateAndSave() {
             let totalHrs = 0;
+            const status = {
+                w8: document.getElementById('w8').checked,
+                g11: document.getElementById('g11').checked,
+                l1: document.getElementById('l1').checked
+            };
 
-            tasks.forEach(t => {
-                const isChecked = document.getElementById(t.id).checked;
-                status[t.id] = isChecked;
-                if (isChecked && t.cat === 'study') totalHrs += t.hrs;
+            studyTasks.forEach(t => {
+                const checked = document.getElementById(t.id).checked;
+                status[t.id] = checked;
+                if (checked) totalHrs += t.hrs;
             });
 
-            updateProgressUI(totalHrs);
-            
-            try {
-                await setDoc(doc(db, "users", userUID, "history", today), {
-                    status, totalHrs, timestamp: Date.now()
-                });
-                renderHistory();
-            } catch (e) { console.error("Error saving:", e); }
+            updateUI(totalHrs);
+
+            if (userUID) {
+                const today = new Date().toDateString();
+                try {
+                    await setDoc(doc(db, "users", userUID, "history", today), {
+                        status, totalHrs, timestamp: Date.now()
+                    });
+                    renderHistory();
+                } catch (e) { console.error(e); }
+            }
         }
 
-        // SYNC DATA FROM CLOUD
+        function updateUI(hrs) {
+            const perc = (hrs / 11) * 100;
+            document.getElementById('progressBar').style.width = Math.min(perc, 100) + '%';
+            document.getElementById('hourLabel').innerText = `${hrs} / 11 HOURS COMPLETED`;
+            if(hrs >= 11) {
+                document.getElementById('progressBar').style.background = 'var(--success)';
+                document.getElementById('progressBar').style.boxShadow = '0 0 20px var(--success)';
+            } else {
+                document.getElementById('progressBar').style.background = 'linear-gradient(90deg, var(--accent), var(--success))';
+            }
+        }
+
         async function syncData() {
             if (!userUID) return;
             document.getElementById('loading').style.display = 'block';
@@ -147,34 +204,42 @@
                 Object.keys(data).forEach(id => {
                     if (document.getElementById(id)) document.getElementById(id).checked = data[id];
                 });
-                updateProgressUI(docSnap.data().totalHrs);
+                updateUI(docSnap.data().totalHrs);
             }
             document.getElementById('loading').style.display = 'none';
             renderHistory();
         }
 
-        function updateProgressUI(hrs) {
-            document.getElementById('progressBar').style.width = (hrs / 11 * 100) + '%';
-            document.getElementById('hourLabel').innerText = `${hrs} / 11 Hours Completed`;
-        }
-
         async function renderHistory() {
             if (!userUID) return;
-            const q = query(collection(db, "users", userUID, "history"), orderBy("timestamp", "desc"), limit(10));
+            const q = query(collection(db, "users", userUID, "history"), orderBy("timestamp", "desc"), limit(7));
             const querySnapshot = await getDocs(q);
             const log = document.getElementById('historyLog');
-            log.innerHTML = '';
+            const today = new Date().toDateString();
             
+            let hasHistory = false;
+            let html = '';
+
             querySnapshot.forEach((doc) => {
-                if(doc.id !== new Date().toDateString()) {
-                    log.innerHTML += `<div class="history-item"><span>${doc.id}</span><b>${doc.data().totalHrs} Hours</b></div>`;
+                if(doc.id !== today) {
+                    hasHistory = true;
+                    const hrs = doc.data().totalHrs;
+                    const statusClass = hrs >= 11 ? 'success' : 'fail';
+                    const statusText = hrs >= 11 ? 'SUCCESS' : 'INCOMPLETE';
+                    html += `
+                        <div class="history-item">
+                            <div>
+                                <div style="font-size:0.8rem; font-weight:bold;">${doc.id.toUpperCase()}</div>
+                                <div style="font-size:0.7rem; opacity:0.6;">${hrs} Hours Logged</div>
+                            </div>
+                            <div class="badge ${statusClass}">${statusText}</div>
+                        </div>`;
                 }
             });
+            if(hasHistory) log.innerHTML = html;
         }
 
         init();
     </script>
 </body>
 </html>
-
-

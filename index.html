@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIIMS Jodhpur Tracker | AIR 1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050a14;
+            --card: #101827;
+            --accent: #00d2ff;
+            --gold: #f1c40f;
+            --text: #ffffff;
+            --success: #00ff88;
+            --danger: #ff4d4d;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 2.2rem; color: var(--accent); margin: 0; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0,210,255,0.3); }
+        .header p { color: var(--gold); font-weight: bold; margin: 5px 0; letter-spacing: 1px; }
+
+        .countdown {
+            background: rgba(255, 77, 77, 0.1);
+            color: var(--danger);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border: 1px solid var(--danger);
+            margin-bottom: 15px;
+        }
+
+        .progress-container {
+            width: 100%;
+            max-width: 450px;
+            background: rgba(255,255,255,0.1);
+            height: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(0,210,255,0.2);
+        }
+
+        #progressBar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--success));
+            box-shadow: 0 0 15px var(--accent);
+            transition: width 0.5s ease-in-out;
+        }
+
+        .hour-counter {
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .tracker-card {
+            background: var(--card);
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        }
+
+        .date-label { text-align: center; font-size: 1rem; margin-bottom: 15px; color: var(--accent); opacity: 0.7; }
+
+        .task-row {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border-left: 4px solid transparent;
+        }
+
+        .routine-type { border-left-color: #4b5563; }
+        .study-type { border-left-color: var(--accent); }
+        .goal-type { border-left-color: var(--gold); background: rgba(241, 196, 15, 0.05); }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .task-info { flex-grow: 1; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; }
+        .hr-tag { font-size: 0.75rem; color: var(--accent); font-weight: 600; opacity: 0.8; }
+
+        .history-box { margin-top: 30px; width: 100%; max-width: 450px; }
+        .history-box h3 { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; font-size: 0.9rem; color: var(--accent); text-align: center; }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            background: rgba(255,255,255,0.04);
+            margin-bottom: 6px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .empty-history {
+            text-align: center;
+            color: #4b5563;
+            font-style: italic;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        .stat-badge { color: var(--gold); font-weight: 800; }
+        .perfect-score { color: var(--success); text-shadow: 0 0 5px var(--success); }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>AIIMS JODHPUR</h1>
+        <p>MISSION: 720/720 (AIR 1)</p>
+    </div>
+
+    <div class="countdown" id="neetCountdown">Loading Days to NEET...</div>
+
+    <div class="progress-container">
+        <div id="progressBar"></div>
+    </div>
+    <div class="hour-counter" id="hourCounter">0 / 11 Hours Completed</div>
+
+    <div class="tracker-card">
+        <div id="displayDate" class="date-label"></div>
+        <div id="taskList"></div>
+    </div>
+
+    <div class="history-box">
+        <h3>PAST STUDY PERFORMANCE</h3>
+        <div id="historyLog"></div>
+    </div>
+
+    <script>
+        const tasks = [
+            { id: 'w8', text: 'Wake up at 8 AM', hrs: 0, cat: 'routine' },
+            { id: 's1', text: 'Study Slot 1 (8-10 AM)', hrs: 2, cat: 'study' },
+            { id: 's2', text: 'Study Slot 2 (11-1 PM)', hrs: 2, cat: 'study' },
+            { id: 's3', text: 'Study Slot 3 (2-5 PM)', hrs: 3, cat: 'study' },
+            { id: 's4', text: 'Study Slot 4 (6-9 PM)', hrs: 3, cat: 'study' },
+            { id: 's5', text: 'Study Slot 5 (10-11 PM)', hrs: 1, cat: 'study' },
+            { id: 'g11', text: 'Target 11 Hours Reached', hrs: 0, cat: 'goal' },
+            { id: 'l1', text: 'Sleep at 1 AM', hrs: 0, cat: 'routine' }
+        ];
+
+        function init() {
+            // Update Date
+            const today = new Date().toDateString();
+            document.getElementById('displayDate').innerText = today;
+            
+            // Build Task List
+            const list = document.getElementById('taskList');
+            list.innerHTML = '';
+            tasks.forEach(task => {
+                list.innerHTML += `
+                    <div class="task-row ${task.cat}-type">
+                        <input type="checkbox" id="${task.id}" onchange="update()">
+                        <div class="task-info">
+                            <span>${task.text}</span>
+                            ${task.hrs > 0 ? `<span class="hr-tag">${task.hrs}h</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Countdown Logic (Assumed NEET 2026 Date: May 3, 2026)
+            const neetDate = new Date("May 3, 2026").getTime();
+            const now = new Date().getTime();
+            const diff = neetDate - now;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            document.getElementById('neetCountdown').innerText = `${days} DAYS LEFT UNTIL NEET 2026`;
+
+            load();
+            renderHistory();
+        }
+
+        function update() {
+            const today = new Date().toDateString();
+            const data = JSON.parse(localStorage.getItem('neet_vfinal_2025') || '{}');
+            
+            const status = {};
+            let currentHours = 0;
+
+            tasks.forEach(t => {
+                const isChecked = document.getElementById(t.id).checked;
+                status[t.id] = isChecked;
+                if (isChecked && t.cat === 'study') currentHours += t.hrs;
+            });
+
+            const percentage = (currentHours / 11) * 100;
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('hourCounter').innerText = `${currentHours} / 11 Hours Completed`;
+
+            data[today] = { checks: status, hours: currentHours };
+            localStorage.setItem('neet_vfinal_2025', JSON.stringify(data));
+            renderHistory();
+        }
+
+        function load() {
+            const today = new Date().toDateString();
+            const data = JSON.parse(localStorage.getItem('neet_vfinal_2025') || '{}');
+            if (data[today]) {
+                const checks = data[today].checks;
+                Object.keys(checks).forEach(id => {
+                    if (document.getElementById(id)) document.getElementById(id).checked = checks[id];
+                });
+                update();
+            }
+        }
+
+        function renderHistory() {
+            const data = JSON.parse(localStorage.getItem('neet_vfinal_2025') || '{}');
+            const log = document.getElementById('historyLog');
+            log.innerHTML = '';
+
+            const dates = Object.keys(data).filter(d => d !== new Date().toDateString()).sort((a, b) => new Date(b) - new Date(a));
+
+            if (dates.length === 0) {
+                log.innerHTML = '<div class="empty-history">No past performance yet. Complete today to log your first day!</div>';
+                return;
+            }
+
+            dates.forEach(d => {
+                const hrs = data[d].hours;
+                log.innerHTML += `
+                    <div class="history-item">
+                        <span>${d}</span>
+                        <span class="stat-badge ${hrs === 11 ? 'perfect-score' : ''}">${hrs} Hours</span>
+                    </div>
+                `;
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>

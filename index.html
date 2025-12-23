@@ -6,155 +6,70 @@
     <title>AIIMS Jodhpur Tracker | AIR 1</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #050a14;
-            --card: #101827;
-            --accent: #00d2ff;
-            --gold: #f1c40f;
-            --text: #ffffff;
-            --success: #00ff88;
-            --danger: #ff4d4d;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
+        :root { --bg: #050a14; --card: #101827; --accent: #00d2ff; --gold: #f1c40f; --text: #ffffff; --success: #00ff88; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         .header { text-align: center; margin-bottom: 20px; }
-        .header h1 { font-size: 2.2rem; color: var(--accent); margin: 0; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0,210,255,0.3); }
-        .header p { color: var(--gold); font-weight: bold; margin: 5px 0; letter-spacing: 1px; }
-
-        .countdown {
-            background: rgba(255, 77, 77, 0.1);
-            color: var(--danger);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            border: 1px solid var(--danger);
-            margin-bottom: 15px;
-        }
-
-        .progress-container {
-            width: 100%;
-            max-width: 450px;
-            background: rgba(255,255,255,0.1);
-            height: 12px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            overflow: hidden;
-            border: 1px solid rgba(0,210,255,0.2);
-        }
-
-        #progressBar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--accent), var(--success));
-            box-shadow: 0 0 15px var(--accent);
-            transition: width 0.5s ease-in-out;
-        }
-
-        .hour-counter {
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-            color: var(--success);
-            font-weight: bold;
-        }
-
-        .tracker-card {
-            background: var(--card);
-            border: 1px solid rgba(0, 210, 255, 0.2);
-            border-radius: 15px;
-            padding: 20px;
-            width: 100%;
-            max-width: 450px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-        }
-
-        .date-label { text-align: center; font-size: 1rem; margin-bottom: 15px; color: var(--accent); opacity: 0.7; }
-
-        .task-row {
-            display: flex;
-            align-items: center;
-            padding: 12px;
-            margin: 8px 0;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
-            border-left: 4px solid transparent;
-        }
-
-        .routine-type { border-left-color: #4b5563; }
-        .study-type { border-left-color: var(--accent); }
-        .goal-type { border-left-color: var(--gold); background: rgba(241, 196, 15, 0.05); }
-
-        input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            margin-right: 15px;
-            cursor: pointer;
-            accent-color: var(--accent);
-        }
-
-        .task-info { flex-grow: 1; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; }
-        .hr-tag { font-size: 0.75rem; color: var(--accent); font-weight: 600; opacity: 0.8; }
-
+        .header h1 { font-size: 2rem; color: var(--accent); margin: 0; letter-spacing: 2px; }
+        .header p { color: var(--gold); font-weight: bold; margin: 5px 0; }
+        .auth-btn { background: white; color: black; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .tracker-card { background: var(--card); border: 1px solid rgba(0, 210, 255, 0.2); border-radius: 15px; padding: 20px; width: 100%; max-width: 450px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+        .progress-container { width: 100%; max-width: 450px; background: rgba(255,255,255,0.1); height: 12px; border-radius: 6px; margin-bottom: 10px; overflow: hidden; }
+        #progressBar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--success)); transition: 0.5s; }
+        .task-row { display: flex; align-items: center; padding: 12px; margin: 8px 0; background: rgba(255, 255, 255, 0.03); border-radius: 8px; border-left: 4px solid var(--accent); }
+        input[type="checkbox"] { width: 22px; height: 22px; margin-right: 15px; cursor: pointer; accent-color: var(--accent); }
         .history-box { margin-top: 30px; width: 100%; max-width: 450px; }
-        .history-box h3 { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; font-size: 0.9rem; color: var(--accent); text-align: center; }
-
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px;
-            background: rgba(255,255,255,0.04);
-            margin-bottom: 6px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-        }
-
-        .empty-history {
-            text-align: center;
-            color: #4b5563;
-            font-style: italic;
-            font-size: 0.85rem;
-            margin-top: 10px;
-        }
-
-        .stat-badge { color: var(--gold); font-weight: 800; }
-        .perfect-score { color: var(--success); text-shadow: 0 0 5px var(--success); }
+        .history-item { display: flex; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.04); margin-bottom: 8px; border-radius: 10px; font-size: 0.9rem; border-bottom: 1px solid rgba(0,210,255,0.1); }
+        #userStatus { margin-bottom: 15px; font-size: 0.85rem; color: var(--success); display: none; text-align: center; }
+        .loading-overlay { font-size: 0.9rem; color: var(--accent); margin: 20px; display: none; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h1>AIIMS JODHPUR</h1>
-        <p>MISSION: 720/720 (AIR 1)</p>
+        <p>GOAL: 720/720 (AIR 1)</p>
     </div>
 
-    <div class="countdown" id="neetCountdown">Loading Days to NEET...</div>
+    <button id="loginBtn" class="auth-btn">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="20"> Login with Google
+    </button>
+    
+    <div id="userStatus">SYNC ACTIVE: <span id="userNameDisplay"></span></div>
+    <div id="loading" class="loading-overlay">Syncing with Cloud...</div>
 
-    <div class="progress-container">
-        <div id="progressBar"></div>
-    </div>
-    <div class="hour-counter" id="hourCounter">0 / 11 Hours Completed</div>
+    <div class="progress-container"><div id="progressBar"></div></div>
+    <div style="font-size: 0.9rem; margin-bottom: 20px; color: var(--success); font-weight: bold;" id="hourLabel">0 / 11 Hours</div>
 
     <div class="tracker-card">
-        <div id="displayDate" class="date-label"></div>
+        <div id="displayDate" style="text-align: center; opacity: 0.6; margin-bottom: 10px; font-size: 0.8rem;"></div>
         <div id="taskList"></div>
     </div>
 
     <div class="history-box">
-        <h3>PAST STUDY PERFORMANCE</h3>
+        <h3 style="text-align: center; color: var(--accent); font-size: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">STUDY LOG (TOTAL HOURS)</h3>
         <div id="historyLog"></div>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCEfFqYg4dlPhWPjkZ8nXyGduIwSrVb-Ik",
+            authDomain: "study-tracker-93ce2.firebaseapp.com",
+            projectId: "study-tracker-93ce2",
+            storageBucket: "study-tracker-93ce2.firebasestorage.app",
+            messagingSenderId: "650276008868",
+            appId: "1:650276008868:web:458e2f152251681db78731",
+            measurementId: "G-QD08DKK30W"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
         const tasks = [
             { id: 'w8', text: 'Wake up at 8 AM', hrs: 0, cat: 'routine' },
             { id: 's1', text: 'Study Slot 1 (8-10 AM)', hrs: 2, cat: 'study' },
@@ -162,95 +77,98 @@
             { id: 's3', text: 'Study Slot 3 (2-5 PM)', hrs: 3, cat: 'study' },
             { id: 's4', text: 'Study Slot 4 (6-9 PM)', hrs: 3, cat: 'study' },
             { id: 's5', text: 'Study Slot 5 (10-11 PM)', hrs: 1, cat: 'study' },
-            { id: 'g11', text: 'Target 11 Hours Reached', hrs: 0, cat: 'goal' },
+            { id: 'g11', text: '11 Hours Goal Met', hrs: 0, cat: 'goal' },
             { id: 'l1', text: 'Sleep at 1 AM', hrs: 0, cat: 'routine' }
         ];
 
+        let userUID = null;
+
+        // AUTHENTICATION LOGIC
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            signInWithPopup(auth, provider).catch(err => alert("Login Failed: " + err.message));
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                userUID = user.uid;
+                document.getElementById('loginBtn').style.display = 'none';
+                document.getElementById('userStatus').style.display = 'block';
+                document.getElementById('userNameDisplay').innerText = user.displayName;
+                syncData();
+            }
+        });
+
+        // INITIALIZE UI
         function init() {
-            // Update Date
-            const today = new Date().toDateString();
-            document.getElementById('displayDate').innerText = today;
-            
-            // Build Task List
+            document.getElementById('displayDate').innerText = new Date().toDateString();
             const list = document.getElementById('taskList');
             list.innerHTML = '';
-            tasks.forEach(task => {
-                list.innerHTML += `
-                    <div class="task-row ${task.cat}-type">
-                        <input type="checkbox" id="${task.id}" onchange="update()">
-                        <div class="task-info">
-                            <span>${task.text}</span>
-                            ${task.hrs > 0 ? `<span class="hr-tag">${task.hrs}h</span>` : ''}
-                        </div>
-                    </div>
-                `;
+            tasks.forEach(t => {
+                const div = document.createElement('div');
+                div.className = 'task-row';
+                div.innerHTML = `<input type="checkbox" id="${t.id}"> <span>${t.text}</span>`;
+                div.querySelector('input').addEventListener('change', saveData);
+                list.appendChild(div);
             });
-
-            // Countdown Logic (Assumed NEET 2026 Date: May 3, 2026)
-            const neetDate = new Date("May 3, 2026").getTime();
-            const now = new Date().getTime();
-            const diff = neetDate - now;
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            document.getElementById('neetCountdown').innerText = `${days} DAYS LEFT UNTIL NEET 2026`;
-
-            load();
-            renderHistory();
         }
 
-        function update() {
+        // SAVE DATA TO CLOUD
+        async function saveData() {
+            if (!userUID) return;
             const today = new Date().toDateString();
-            const data = JSON.parse(localStorage.getItem('neet_vfinal_2025') || '{}');
-            
             const status = {};
-            let currentHours = 0;
+            let totalHrs = 0;
 
             tasks.forEach(t => {
                 const isChecked = document.getElementById(t.id).checked;
                 status[t.id] = isChecked;
-                if (isChecked && t.cat === 'study') currentHours += t.hrs;
+                if (isChecked && t.cat === 'study') totalHrs += t.hrs;
             });
 
-            const percentage = (currentHours / 11) * 100;
-            document.getElementById('progressBar').style.width = percentage + '%';
-            document.getElementById('hourCounter').innerText = `${currentHours} / 11 Hours Completed`;
+            updateProgressUI(totalHrs);
+            
+            try {
+                await setDoc(doc(db, "users", userUID, "history", today), {
+                    status, totalHrs, timestamp: Date.now()
+                });
+                renderHistory();
+            } catch (e) { console.error("Error saving:", e); }
+        }
 
-            data[today] = { checks: status, hours: currentHours };
-            localStorage.setItem('neet_vfinal_2025', JSON.stringify(data));
+        // SYNC DATA FROM CLOUD
+        async function syncData() {
+            if (!userUID) return;
+            document.getElementById('loading').style.display = 'block';
+            const today = new Date().toDateString();
+            const docSnap = await getDoc(doc(db, "users", userUID, "history", today));
+            
+            if (docSnap.exists()) {
+                const data = docSnap.data().status;
+                Object.keys(data).forEach(id => {
+                    if (document.getElementById(id)) document.getElementById(id).checked = data[id];
+                });
+                updateProgressUI(docSnap.data().totalHrs);
+            }
+            document.getElementById('loading').style.display = 'none';
             renderHistory();
         }
 
-        function load() {
-            const today = new Date().toDateString();
-            const data = JSON.parse(localStorage.getItem('neet_vfinal_2025') || '{}');
-            if (data[today]) {
-                const checks = data[today].checks;
-                Object.keys(checks).forEach(id => {
-                    if (document.getElementById(id)) document.getElementById(id).checked = checks[id];
-                });
-                update();
-            }
+        function updateProgressUI(hrs) {
+            document.getElementById('progressBar').style.width = (hrs / 11 * 100) + '%';
+            document.getElementById('hourLabel').innerText = `${hrs} / 11 Hours Completed`;
         }
 
-        function renderHistory() {
-            const data = JSON.parse(localStorage.getItem('neet_vfinal_2025') || '{}');
+        async function renderHistory() {
+            if (!userUID) return;
+            const q = query(collection(db, "users", userUID, "history"), orderBy("timestamp", "desc"), limit(10));
+            const querySnapshot = await getDocs(q);
             const log = document.getElementById('historyLog');
             log.innerHTML = '';
-
-            const dates = Object.keys(data).filter(d => d !== new Date().toDateString()).sort((a, b) => new Date(b) - new Date(a));
-
-            if (dates.length === 0) {
-                log.innerHTML = '<div class="empty-history">No past performance yet. Complete today to log your first day!</div>';
-                return;
-            }
-
-            dates.forEach(d => {
-                const hrs = data[d].hours;
-                log.innerHTML += `
-                    <div class="history-item">
-                        <span>${d}</span>
-                        <span class="stat-badge ${hrs === 11 ? 'perfect-score' : ''}">${hrs} Hours</span>
-                    </div>
-                `;
+            
+            querySnapshot.forEach((doc) => {
+                if(doc.id !== new Date().toDateString()) {
+                    log.innerHTML += `<div class="history-item"><span>${doc.id}</span><b>${doc.data().totalHrs} Hours</b></div>`;
+                }
             });
         }
 
